@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from numpy.linalg import inv
 
 
 def kalman_transit_covariance(S, A, R):
@@ -8,7 +9,7 @@ def kalman_transit_covariance(S, A, R):
     :param A: Either transition matrix or jacobian matrix
     :param R: Current noise covariance matrix
     """
-    new_S = None
+    new_S = A.dot(S).dot(A.T) + R
     return new_S
 
 
@@ -21,6 +22,7 @@ def kalman_process_observation(mu, S, observation, C, Q):
     :param C: Observation matrix
     :param Q: Noise covariance matrix (with zero mean)
     """
-    new_mu = None
-    new_S = None
+    K = S.dot(C.T).dot(inv(C.dot(S).dot(C.T) + Q))
+    new_mu = mu + K.dot(observation - C.dot(mu))
+    new_S = (np.eye(K.shape[0]) - K.dot(C)).dot(S)
     return new_mu, new_S
