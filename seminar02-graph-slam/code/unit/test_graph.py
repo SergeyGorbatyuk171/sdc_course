@@ -5,7 +5,7 @@ import optimization as o
 import utils
 import visualizer as v
 
-SEMINAR_GRAPH_DATA = 'timeline.json'
+SEMINAR_GRAPH_DATA = 'timeline_39.json'
 graph_data_path = os.path.join(utils.get_data_dir(), SEMINAR_GRAPH_DATA)
 
 
@@ -54,7 +54,7 @@ def test_graph_optimization_without_landmarks():
 
 
 def test_graph_optimization_with_landmarks():
-    N = -1 # TO_IMPLEMENT: your number in the course as listed in Anytask
+    N = 39 # TO_IMPLEMENT: your number in the course as listed in Anytask
     alt_graph_data_path = os.path.join(utils.get_data_dir(), 'timeline_{}.json'.format(N))
     timeline = json.load(open(alt_graph_data_path))
     optimization = o.Optimization(timeline)
@@ -70,7 +70,7 @@ def test_graph_optimization_with_landmarks():
     visualizer.update_features(optimization.features)
     visualizer.show(OUTPUT_TITLE, picture_before_path)
     
-    assert optimization.optimize(30)
+    assert optimization.optimize(100)
     visualizer.update_poses(optimization.poses)
     visualizer.update_features(optimization.features)
     visualizer.show(OUTPUT_TITLE, picture_after_path)

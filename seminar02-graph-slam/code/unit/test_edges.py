@@ -139,5 +139,5 @@ def test_landmark_observation_edge():
     
     edge = ge.LandmarkObservationEdge(pose_vertex=pose_vertex, feature_vertex=feature_vertex, event=event)
     edge.compute_error()
-    assert np.linalg.norm(edge.error - np.array([0.0, 0.0]), ord=np.inf) < 1E-5
+    assert np.linalg.norm(edge.error - np.array([0.0, 0.0]), ord=np.inf) < 1E-5, edge.error
     assert np.linalg.norm(edge.inf.flatten() - np.diag([0.25, 0.25]).flatten(), ord=np.inf) < 1E-5

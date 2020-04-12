@@ -33,11 +33,43 @@ class Optimization(object):
 
     def _init_pose_vertices(self, timeline):
         self._pose_vertices = []
+        EPS = 1e-3
         '''
         #########################################
         TO_IMPLEMENT Seminar.Task#1
         '''
-        pass
+        traj_len = len(timeline)
+        prev_control = None
+        for inst in timeline:
+            t = inst[0]['time']
+            control_event = list(filter(lambda ent: ent['type'] == 'control', inst))
+            if t == 0:
+                init_event = list(filter(lambda ent: ent['type'] == 'init', inst))[0]
+                self._pose_vertices.append(ge.SE2Vertex(init_event['pose']))
+                prev_control = control_event[0]['command']
+            else:
+                v, w = prev_control
+                prev_x, prev_y, prev_orient = self._pose_vertices[-1].params
+                if np.fabs(w) > EPS:
+                    orient = prev_orient + w
+                    delta = np.array([
+                        -np.sin(prev_orient) + np.sin(orient),
+                        -np.cos(prev_orient) + np.cos(orient),
+                        w
+                    ])
+                    delta[:-1] *= v/w
+                else:
+                    delta = np.array([
+                        v * np.cos(prev_orient),
+                        v * np.sin(prev_orient),
+                        0.
+                    ])
+                self._pose_vertices.append(ge.SE2Vertex(self._pose_vertices[-1].params + delta))
+                if t + 1 < traj_len:
+                    prev_control = control_event[0]['command']
+
+
+
 
     def _init_constraints(self, timeline):
         builder_classes = []
